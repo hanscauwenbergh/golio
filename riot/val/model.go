@@ -104,7 +104,7 @@ type Match struct {
 type MatchInfo struct {
 	MatchID            string `json:"matchId"`
 	MapID              string `json:"mapId"`
-	GameLengthMillis   int    `json:"gameLengthMillis"`
+	GameLengthMillis   int64  `json:"gameLengthMillis"`
 	GameStartMillis    int64  `json:"gameStartMillis"`
 	ProvisioningFlowID string `json:"provisioningFlowId"`
 	IsCompleted        bool   `json:"isCompleted"`
@@ -124,28 +124,28 @@ type MatchPlayer struct {
 	PartyID         string      `json:"partyId"`
 	CharacterID     string      `json:"characterId"`
 	Stats           PlayerStats `json:"stats"`
-	CompetitiveTier int         `json:"competitiveTier"`
+	CompetitiveTier int64       `json:"competitiveTier"`
 	PlayerCard      string      `json:"playerCard"`
 	PlayerTitle     string      `json:"playerTitle"`
 }
 
 // PlayerStats stats of a player in a match
 type PlayerStats struct {
-	Score          int          `json:"score"`
-	RoundsPlayed   int          `json:"roundsPlayed"`
-	Kills          int          `json:"kills"`
-	Deaths         int          `json:"deaths"`
-	Assists        int          `json:"assists"`
-	PlaytimeMillis int          `json:"playtimeMillis"`
+	Score          int64        `json:"score"`
+	RoundsPlayed   int64        `json:"roundsPlayed"`
+	Kills          int64        `json:"kills"`
+	Deaths         int64        `json:"deaths"`
+	Assists        int64        `json:"assists"`
+	PlaytimeMillis int64        `json:"playtimeMillis"`
 	AbilityCasts   AbilityCasts `json:"abilityCasts"`
 }
 
 // AbilityCasts number of casts of abilities for a player in a match
 type AbilityCasts struct {
-	GrenadeCasts  int `json:"grenadeCasts"`
-	Ability1Casts int `json:"ability1Casts"`
-	Ability2Casts int `json:"ability2Casts"`
-	UltimateCasts int `json:"ultimateCasts"`
+	GrenadeCasts  int64 `json:"grenadeCasts"`
+	Ability1Casts int64 `json:"ability1Casts"`
+	Ability2Casts int64 `json:"ability2Casts"`
+	UltimateCasts int64 `json:"ultimateCasts"`
 }
 
 // Coach holds coach id and team id
@@ -158,9 +158,9 @@ type Coach struct {
 type Team struct {
 	TeamID       string `json:"teamId"`
 	Won          bool   `json:"won"`
-	RoundsPlayed int    `json:"roundsPlayed"`
-	RoundsWon    int    `json:"roundsWon"`
-	NumPoints    int    `json:"numPoints"`
+	RoundsPlayed int64  `json:"roundsPlayed"`
+	RoundsWon    int64  `json:"roundsWon"`
+	NumPoints    int64  `json:"numPoints"`
 }
 
 // PlayerLocations represents player location for planting and defusing
@@ -172,23 +172,23 @@ type PlayerLocations struct {
 
 // Location represents the location for PlayerLocations
 type Location struct {
-	X int `json:"x"`
-	Y int `json:"y"`
+	X int64 `json:"x"`
+	Y int64 `json:"y"`
 }
 
 // RoundResult holds result data of a round
 type RoundResult struct {
-	RoundNum              int                `json:"roundNum"`
+	RoundNum              int64              `json:"roundNum"`
 	RoundResult           string             `json:"roundResult"`
 	RoundCeremony         string             `json:"roundCeremony"`
 	WinningTeam           string             `json:"winningTeam"`
 	BombPlanter           string             `json:"bombPlanter"`
 	BombDefuser           string             `json:"bombDefuser"`
-	PlantRoundTime        int                `json:"plantRoundTime"`
+	PlantRoundTime        int64              `json:"plantRoundTime"`
 	PlantPlayerLocations  []PlayerLocations  `json:"plantPlayerLocations"`
 	PlantLocation         Location           `json:"plantLocation"`
 	PlantSite             string             `json:"plantSite"`
-	DefuseRoundTime       int                `json:"defuseRoundTime"`
+	DefuseRoundTime       int64              `json:"defuseRoundTime"`
 	DefusePlayerLocations []PlayerLocations  `json:"defusePlayerLocations"`
 	DefuseLocation        Location           `json:"defuseLocation"`
 	PlayerStats           []PlayerRoundStats `json:"playerStats"`
@@ -200,15 +200,15 @@ type PlayerRoundStats struct {
 	PUUID   string   `json:"puuid"`
 	Kills   []Kill   `json:"kills"`
 	Damages []Damage `json:"damage"`
-	Score   int      `json:"score"`
+	Score   int64    `json:"score"`
 	Economy Economy  `json:"economy"`
 	Ability Ability  `json:"ability"`
 }
 
 // Kill contains information of kills e.g. killer, victim, finishing damage
 type Kill struct {
-	TimeSinceGameStartMillis  int               `json:"timeSinceGameStartMillis"`
-	TimeSinceRoundStartMillis int               `json:"timeSinceRoundStartMillis"`
+	TimeSinceGameStartMillis  int64             `json:"timeSinceGameStartMillis"`
+	TimeSinceRoundStartMillis int64             `json:"timeSinceRoundStartMillis"`
 	Killer                    string            `json:"killer"`
 	Victim                    string            `json:"victim"`
 	VictimLocation            Location          `json:"victimLocation"`
@@ -236,11 +236,11 @@ type Damage struct {
 
 // Economy holds economy information including spent credits
 type Economy struct {
-	LoadOutValue int    `json:"loadoutValue"`
+	LoadOutValue int64  `json:"loadoutValue"`
 	Weapon       string `json:"weapon"`
 	Armor        string `json:"armor"`
-	Remaining    int    `json:"remaining"`
-	Spent        int    `json:"spent"`
+	Remaining    int64  `json:"remaining"`
+	Spent        int64  `json:"spent"`
 }
 
 // Ability holds ability effects of a player in a round

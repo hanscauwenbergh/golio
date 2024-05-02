@@ -16,7 +16,7 @@ type TournamentClient struct {
 // CreateCodes creates a specified amount of codes for a tournament.
 // For more information about the parameters see the documentation for TournamentCodeParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (t *TournamentClient) CreateCodes(id, count int, params *TournamentCodeParameters, stub bool) ([]string, error) {
+func (t *TournamentClient) CreateCodes(id, count int64, params *TournamentCodeParameters, stub bool) ([]string, error) {
 	logger := t.logger().WithFields(
 		log.Fields{
 			"method": "CreateCodes",

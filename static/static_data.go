@@ -58,7 +58,7 @@ func (c *Client) GetSeasons() ([]Season, error) {
 }
 
 // GetSeason returns the season for the specified id or an error if no season for the id exists
-func (c *Client) GetSeason(id int) (Season, error) {
+func (c *Client) GetSeason(id int64) (Season, error) {
 	seasons, err := c.GetSeasons()
 	if err != nil {
 		return Season{}, err
@@ -90,7 +90,7 @@ func (c *Client) GetQueues() ([]Queue, error) {
 }
 
 // GetQueue returns the queue for the specified id or an error if no queue for the id exists
-func (c *Client) GetQueue(id int) (Queue, error) {
+func (c *Client) GetQueue(id int64) (Queue, error) {
 	queues, err := c.GetQueues()
 	if err != nil {
 		return Queue{}, err
@@ -122,7 +122,7 @@ func (c *Client) GetMaps() ([]Map, error) {
 }
 
 // GetMap returns the map for the specified id or an error if no map for the id exists
-func (c *Client) GetMap(id int) (Map, error) {
+func (c *Client) GetMap(id int64) (Map, error) {
 	mapps, err := c.GetMaps()
 	if err != nil {
 		return Map{}, err

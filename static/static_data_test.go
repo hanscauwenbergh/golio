@@ -319,7 +319,7 @@ func TestClient_GetMap(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		id      int
+		id      int64
 		want    Map
 		wantErr error
 	}
@@ -360,7 +360,7 @@ func TestClient_GetQueue(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		id      int
+		id      int64
 		want    Queue
 		wantErr error
 	}
@@ -401,7 +401,7 @@ func TestClient_GetSeason(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		id      int
+		id      int64
 		want    Season
 		wantErr error
 	}

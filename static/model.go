@@ -2,13 +2,13 @@ package static
 
 // Season contains an ID and a name for a season
 type Season struct {
-	ID     int    `json:"id"`
+	ID     int64  `json:"id"`
 	Season string `json:"season"`
 }
 
 // Queue contains a description and notes, and ID and a map for a queue
 type Queue struct {
-	ID          int    `json:"queueId"`
+	ID          int64  `json:"queueId"`
 	Map         string `json:"map"`
 	Description string `json:"description"`
 	Notes       string `json:"notes"`
@@ -16,7 +16,7 @@ type Queue struct {
 
 // Map contains notes, an ID and a name for a map
 type Map struct {
-	ID    int    `json:"mapId"`
+	ID    int64  `json:"mapId"`
 	Name  string `json:"mapName"`
 	Notes string `json:"notes"`
 }

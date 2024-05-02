@@ -12,16 +12,16 @@ import (
 
 // ChampionInfo contains information about the free champion rotation
 type ChampionInfo struct {
-	FreeChampionIDsForNewPlayers []int `json:"freeChampionIDsForNewPlayers"`
-	FreeChampionIDs              []int `json:"freeChampionIDs"`
-	MaxNewPlayerLevel            int   `json:"maxNewPlayerLevel"`
+	FreeChampionIDsForNewPlayers []int64 `json:"freeChampionIDsForNewPlayers"`
+	FreeChampionIDs              []int64 `json:"freeChampionIDs"`
+	MaxNewPlayerLevel            int64   `json:"maxNewPlayerLevel"`
 }
 
 // GetChampionsForNewPlayers returns data for champions available for free to new players
 func (i *ChampionInfo) GetChampionsForNewPlayers(client *datadragon.Client) ([]datadragon.ChampionDataExtended, error) {
 	res := make([]datadragon.ChampionDataExtended, 0, len(i.FreeChampionIDsForNewPlayers))
 	for _, id := range i.FreeChampionIDsForNewPlayers {
-		champion, err := client.GetChampionByID(strconv.Itoa(id))
+		champion, err := client.GetChampionByID(strconv.FormatInt(id, 10))
 		if err != nil {
 			return nil, err
 		}
@@ -34,7 +34,7 @@ func (i *ChampionInfo) GetChampionsForNewPlayers(client *datadragon.Client) ([]d
 func (i *ChampionInfo) GetChampions(client *datadragon.Client) ([]datadragon.ChampionDataExtended, error) {
 	res := make([]datadragon.ChampionDataExtended, 0, len(i.FreeChampionIDsForNewPlayers))
 	for _, id := range i.FreeChampionIDs {
-		champion, err := client.GetChampionByID(strconv.Itoa(id))
+		champion, err := client.GetChampionByID(strconv.FormatInt(id, 10))
 		if err != nil {
 			return nil, err
 		}
@@ -46,13 +46,13 @@ func (i *ChampionInfo) GetChampions(client *datadragon.Client) ([]datadragon.Cha
 // ChampionMastery represents the mastery of a champion in the mastery system for a summoner
 type ChampionMastery struct {
 	ChestGranted                 bool   `json:"chestGranted"`
-	ChampionLevel                int    `json:"championLevel"`
-	ChampionPoints               int    `json:"championPoints"`
-	ChampionID                   int    `json:"championId"`
-	ChampionPointsUntilNextLevel int    `json:"championPointsUntilNextLevel"`
-	LastPlayTime                 int    `json:"lastPlayTime"`
-	TokensEarned                 int    `json:"tokensEarned"`
-	ChampionPointsSinceLastLevel int    `json:"championPointsSinceLastLevel"`
+	ChampionLevel                int64  `json:"championLevel"`
+	ChampionPoints               int64  `json:"championPoints"`
+	ChampionID                   int64  `json:"championId"`
+	ChampionPointsUntilNextLevel int64  `json:"championPointsUntilNextLevel"`
+	LastPlayTime                 int64  `json:"lastPlayTime"`
+	TokensEarned                 int64  `json:"tokensEarned"`
+	ChampionPointsSinceLastLevel int64  `json:"championPointsSinceLastLevel"`
 	SummonerID                   string `json:"summonerId"`
 }
 
@@ -63,7 +63,7 @@ func (m *ChampionMastery) GetSummoner(client *Client) (*Summoner, error) {
 
 // GetChampion returns the champion of this mastery
 func (m *ChampionMastery) GetChampion(client *datadragon.Client) (datadragon.ChampionDataExtended, error) {
-	return client.GetChampionByID(strconv.Itoa(m.ChampionID))
+	return client.GetChampionByID(strconv.FormatInt(m.ChampionID, 10))
 }
 
 // LeagueList represents a league containing all player entries in it
@@ -77,7 +77,7 @@ type LeagueList struct {
 }
 
 // GetRank returns the entry at the given rank, sorted by league points
-func (l *LeagueList) GetRank(i int) *LeagueItem {
+func (l *LeagueList) GetRank(i int64) *LeagueItem {
 	if l.sortedEntries == nil || len(l.sortedEntries) != len(l.Entries) {
 		l.sortedEntries = make([]*LeagueItem, len(l.Entries))
 		copy(l.sortedEntries, l.Entries)
@@ -96,15 +96,15 @@ type LeagueItem struct {
 	SummonerName string      `json:"summonerName"`
 	HotStreak    bool        `json:"hotStreak"`
 	MiniSeries   *MiniSeries `json:"miniSeries"`
-	Wins         int         `json:"wins"`
+	Wins         int64       `json:"wins"`
 	Veteran      bool        `json:"veteran"`
-	Losses       int         `json:"losses"`
+	Losses       int64       `json:"losses"`
 	FreshBlood   bool        `json:"freshBlood"`
 	Inactive     bool        `json:"inactive"`
 	Tier         string      `json:"tier"`
 	Rank         string      `json:"rank"`
 	SummonerID   string      `json:"summonerId"`
-	LeaguePoints int         `json:"leaguePoints"`
+	LeaguePoints int64       `json:"leaguePoints"`
 }
 
 // GetSummoner returns the summoner of this league item
@@ -115,9 +115,9 @@ func (i *LeagueItem) GetSummoner(client *Client) (*Summoner, error) {
 // MiniSeries represents a mini series when playing to ascend to the next ranked tier
 type MiniSeries struct {
 	Progress string `json:"progress"`
-	Losses   int    `json:"losses"`
-	Target   int    `json:"target"`
-	Wins     int    `json:"wins"`
+	Losses   int64  `json:"losses"`
+	Target   int64  `json:"target"`
+	Wins     int64  `json:"wins"`
 }
 
 // Match contains information about a match
@@ -148,7 +148,7 @@ type MatchInfo struct {
 	// field consistent with that of match-v4. The best way to handling the change in this field
 	// is to treat the value as milliseconds if the gameEndTimestamp field isn't in the response
 	// and to treat the value as seconds if gameEndTimestamp is in the response.
-	GameDuration int `json:"gameDuration"`
+	GameDuration int64 `json:"gameDuration"`
 	// Unix timestamp for when match ends on the game server. This timestamp can occasionally
 	// be significantly longer than when the match "ends". The most reliable way of determining
 	// the timestamp for the end of the match would be to add the max time played of any
@@ -165,13 +165,13 @@ type MatchInfo struct {
 	// The first two parts can be used to determine the patch a game was played on.
 	GameVersion string `json:"gameVersion"`
 	// Please refer to the Game Constants documentation.
-	MapID int `json:"mapId"`
+	MapID int64 `json:"mapId"`
 	// Participant information.
 	Participants []*Participant `json:"participants"`
 	// Platform where the match was played.
 	PlatformID string `json:"platformId"`
 	// Please refer to the Game Constants documentation.
-	QueueID int `json:"queueId"`
+	QueueID int64 `json:"queueId"`
 	// Team information.
 	Teams []*Team `json:"teams"`
 	// Tournament code used to generate the match. This field was added to match-v5 in patch 11.13 on June 23rd, 2021.
@@ -200,24 +200,24 @@ func (m *MatchInfo) GetGameMode(client *static.Client) (static.GameMode, error) 
 
 // StatPerks hold stats for a perk
 type StatPerks struct {
-	Defense int `json:"defense"`
-	Flex    int `json:"flex"`
-	Offense int `json:"offense"`
+	Defense int64 `json:"defense"`
+	Flex    int64 `json:"flex"`
+	Offense int64 `json:"offense"`
 }
 
 // Selections contains information about perk selections
 type Selections struct {
-	Perk int `json:"perk"`
-	Var1 int `json:"var1"`
-	Var2 int `json:"var2"`
-	Var3 int `json:"var3"`
+	Perk int64 `json:"perk"`
+	Var1 int64 `json:"var1"`
+	Var2 int64 `json:"var2"`
+	Var3 int64 `json:"var3"`
 }
 
 // Styles holds perk style information
 type Styles struct {
 	Description string       `json:"description"`
 	Selections  []Selections `json:"selections"`
-	Style       int          `json:"style"`
+	Style       int64        `json:"style"`
 }
 
 // ParticipantPerks holds the perks for a participant in a match
@@ -228,35 +228,35 @@ type ParticipantPerks struct {
 
 // Participant hold information for a participant of a match
 type Participant struct {
-	Assists         int `json:"assists"`
-	BaronKills      int `json:"baronKills"`
-	BountyLevel     int `json:"bountyLevel"`
-	ChampExperience int `json:"champExperience"`
-	ChampLevel      int `json:"champLevel"`
+	Assists         int64 `json:"assists"`
+	BaronKills      int64 `json:"baronKills"`
+	BountyLevel     int64 `json:"bountyLevel"`
+	ChampExperience int64 `json:"champExperience"`
+	ChampLevel      int64 `json:"champLevel"`
 	// Prior to patch 11.4, on Feb 18th, 2021, this field returned invalid championIds.
 	// We recommend determining the champion based on the championName field for matches played prior to patch 11.4.
-	ChampionID   int    `json:"championId"`
+	ChampionID   int64  `json:"championId"`
 	ChampionName string `json:"championName"`
 	// This field is currently only utilized for Kayn's transformations.
 	// (Legal values: 0 - None, 1 - Slayer, 2 - Assassin)
-	ChampionTransform         int  `json:"championTransform"`
-	ConsumablesPurchased      int  `json:"consumablesPurchased"`
-	DamageDealtToBuildings    int  `json:"damageDealtToBuildings"`
-	DamageDealtToObjectives   int  `json:"damageDealtToObjectives"`
-	DamageDealtToTurrets      int  `json:"damageDealtToTurrets"`
-	DamageSelfMitigated       int  `json:"damageSelfMitigated"`
-	Deaths                    int  `json:"deaths"`
-	DetectorWardsPlaced       int  `json:"detectorWardsPlaced"`
-	DoubleKills               int  `json:"doubleKills"`
-	DragonKills               int  `json:"dragonKills"`
-	FirstBloodAssist          bool `json:"firstBloodAssist"`
-	FirstBloodKill            bool `json:"firstBloodKill"`
-	FirstTowerAssist          bool `json:"firstTowerAssist"`
-	FirstTowerKill            bool `json:"firstTowerKill"`
-	GameEndedInEarlySurrender bool `json:"gameEndedInEarlySurrender"`
-	GameEndedInSurrender      bool `json:"gameEndedInSurrender"`
-	GoldEarned                int  `json:"goldEarned"`
-	GoldSpent                 int  `json:"goldSpent"`
+	ChampionTransform         int64 `json:"championTransform"`
+	ConsumablesPurchased      int64 `json:"consumablesPurchased"`
+	DamageDealtToBuildings    int64 `json:"damageDealtToBuildings"`
+	DamageDealtToObjectives   int64 `json:"damageDealtToObjectives"`
+	DamageDealtToTurrets      int64 `json:"damageDealtToTurrets"`
+	DamageSelfMitigated       int64 `json:"damageSelfMitigated"`
+	Deaths                    int64 `json:"deaths"`
+	DetectorWardsPlaced       int64 `json:"detectorWardsPlaced"`
+	DoubleKills               int64 `json:"doubleKills"`
+	DragonKills               int64 `json:"dragonKills"`
+	FirstBloodAssist          bool  `json:"firstBloodAssist"`
+	FirstBloodKill            bool  `json:"firstBloodKill"`
+	FirstTowerAssist          bool  `json:"firstTowerAssist"`
+	FirstTowerKill            bool  `json:"firstTowerKill"`
+	GameEndedInEarlySurrender bool  `json:"gameEndedInEarlySurrender"`
+	GameEndedInSurrender      bool  `json:"gameEndedInSurrender"`
+	GoldEarned                int64 `json:"goldEarned"`
+	GoldSpent                 int64 `json:"goldSpent"`
 	// Both individualPosition and teamPosition are computed by the game server and are
 	// different versions of the most likely position played by a player. The individualPosition
 	// is the best guess for which position the player actually played in isolation of
@@ -265,60 +265,60 @@ type Participant struct {
 	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field
 	// over the individualPosition field.
 	IndividualPosition             string            `json:"individualPosition"`
-	InhibitorKills                 int               `json:"inhibitorKills"`
-	InhibitorTakedowns             int               `json:"inhibitorTakedowns"`
-	InhibitorsLost                 int               `json:"inhibitorsLost"`
-	Item0                          int               `json:"item0"`
-	Item1                          int               `json:"item1"`
-	Item2                          int               `json:"item2"`
-	Item3                          int               `json:"item3"`
-	Item4                          int               `json:"item4"`
-	Item5                          int               `json:"item5"`
-	Item6                          int               `json:"item6"`
-	ItemsPurchased                 int               `json:"itemsPurchased"`
-	KillingSprees                  int               `json:"killingSprees"`
-	Kills                          int               `json:"kills"`
+	InhibitorKills                 int64             `json:"inhibitorKills"`
+	InhibitorTakedowns             int64             `json:"inhibitorTakedowns"`
+	InhibitorsLost                 int64             `json:"inhibitorsLost"`
+	Item0                          int64             `json:"item0"`
+	Item1                          int64             `json:"item1"`
+	Item2                          int64             `json:"item2"`
+	Item3                          int64             `json:"item3"`
+	Item4                          int64             `json:"item4"`
+	Item5                          int64             `json:"item5"`
+	Item6                          int64             `json:"item6"`
+	ItemsPurchased                 int64             `json:"itemsPurchased"`
+	KillingSprees                  int64             `json:"killingSprees"`
+	Kills                          int64             `json:"kills"`
 	Lane                           string            `json:"lane"`
-	LargestCriticalStrike          int               `json:"largestCriticalStrike"`
-	LargestKillingSpree            int               `json:"largestKillingSpree"`
-	LargestMultiKill               int               `json:"largestMultiKill"`
-	LongestTimeSpentLiving         int               `json:"longestTimeSpentLiving"`
-	MagicDamageDealt               int               `json:"magicDamageDealt"`
-	MagicDamageDealtToChampions    int               `json:"magicDamageDealtToChampions"`
-	MagicDamageTaken               int               `json:"magicDamageTaken"`
-	NeutralMinionsKilled           int               `json:"neutralMinionsKilled"`
-	NexusKills                     int               `json:"nexusKills"`
-	NexusLost                      int               `json:"nexusLost"`
-	NexusTakedowns                 int               `json:"nexusTakedowns"`
-	ObjectivesStolen               int               `json:"objectivesStolen"`
-	ObjectivesStolenAssists        int               `json:"objectivesStolenAssists"`
-	ParticipantID                  int               `json:"participantId"`
-	PentaKills                     int               `json:"pentaKills"`
+	LargestCriticalStrike          int64             `json:"largestCriticalStrike"`
+	LargestKillingSpree            int64             `json:"largestKillingSpree"`
+	LargestMultiKill               int64             `json:"largestMultiKill"`
+	LongestTimeSpentLiving         int64             `json:"longestTimeSpentLiving"`
+	MagicDamageDealt               int64             `json:"magicDamageDealt"`
+	MagicDamageDealtToChampions    int64             `json:"magicDamageDealtToChampions"`
+	MagicDamageTaken               int64             `json:"magicDamageTaken"`
+	NeutralMinionsKilled           int64             `json:"neutralMinionsKilled"`
+	NexusKills                     int64             `json:"nexusKills"`
+	NexusLost                      int64             `json:"nexusLost"`
+	NexusTakedowns                 int64             `json:"nexusTakedowns"`
+	ObjectivesStolen               int64             `json:"objectivesStolen"`
+	ObjectivesStolenAssists        int64             `json:"objectivesStolenAssists"`
+	ParticipantID                  int64             `json:"participantId"`
+	PentaKills                     int64             `json:"pentaKills"`
 	Perks                          *ParticipantPerks `json:"perks"`
-	PhysicalDamageDealt            int               `json:"physicalDamageDealt"`
-	PhysicalDamageDealtToChampions int               `json:"physicalDamageDealtToChampions"`
-	PhysicalDamageTaken            int               `json:"physicalDamageTaken"`
-	ProfileIcon                    int               `json:"profileIcon"`
+	PhysicalDamageDealt            int64             `json:"physicalDamageDealt"`
+	PhysicalDamageDealtToChampions int64             `json:"physicalDamageDealtToChampions"`
+	PhysicalDamageTaken            int64             `json:"physicalDamageTaken"`
+	ProfileIcon                    int64             `json:"profileIcon"`
 	PUUID                          string            `json:"puuid"`
-	QuadraKills                    int               `json:"quadraKills"`
+	QuadraKills                    int64             `json:"quadraKills"`
 	RiotIDGameName                 string            `json:"riotIdGameName"`
 	RiotIDName                     string            `json:"riotIdName"`
 	RiotIDTagline                  string            `json:"riotIdTagline"`
 	Role                           string            `json:"role"`
-	SightWardsBoughtInGame         int               `json:"sightWardsBoughtInGame"`
-	Spell1Casts                    int               `json:"spell1Casts"`
-	Spell2Casts                    int               `json:"spell2Casts"`
-	Spell3Casts                    int               `json:"spell3Casts"`
-	Spell4Casts                    int               `json:"spell4Casts"`
-	Summoner1Casts                 int               `json:"summoner1Casts"`
-	Summoner1ID                    int               `json:"summoner1Id"`
-	Summoner2Casts                 int               `json:"summoner2Casts"`
-	Summoner2ID                    int               `json:"summoner2Id"`
+	SightWardsBoughtInGame         int64             `json:"sightWardsBoughtInGame"`
+	Spell1Casts                    int64             `json:"spell1Casts"`
+	Spell2Casts                    int64             `json:"spell2Casts"`
+	Spell3Casts                    int64             `json:"spell3Casts"`
+	Spell4Casts                    int64             `json:"spell4Casts"`
+	Summoner1Casts                 int64             `json:"summoner1Casts"`
+	Summoner1ID                    int64             `json:"summoner1Id"`
+	Summoner2Casts                 int64             `json:"summoner2Casts"`
+	Summoner2ID                    int64             `json:"summoner2Id"`
 	SummonerID                     string            `json:"summonerId"`
-	SummonerLevel                  int               `json:"summonerLevel"`
+	SummonerLevel                  int64             `json:"summonerLevel"`
 	SummonerName                   string            `json:"summonerName"`
 	TeamEarlySurrendered           bool              `json:"teamEarlySurrendered"`
-	TeamID                         int               `json:"teamId"`
+	TeamID                         int64             `json:"teamId"`
 	// Both individualPosition and teamPosition are computed by the game server and are
 	// different versions of the most likely position played by a player. The individualPosition
 	// is the best guess for which position the player actually played in isolation of
@@ -327,30 +327,30 @@ type Participant struct {
 	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field
 	// over the individualPosition field.
 	TeamPosition                   string `json:"teamPosition"`
-	TimeCCingOthers                int    `json:"timeCCingOthers"`
-	TimePlayed                     int    `json:"timePlayed"`
-	TotalDamageDealt               int    `json:"totalDamageDealt"`
-	TotalDamageDealtToChampions    int    `json:"totalDamageDealtToChampions"`
-	TotalDamageShieldedOnTeammates int    `json:"totalDamageShieldedOnTeammates"`
-	TotalDamageTaken               int    `json:"totalDamageTaken"`
-	TotalHeal                      int    `json:"totalHeal"`
-	TotalHealsOnTeammates          int    `json:"totalHealsOnTeammates"`
-	TotalMinionsKilled             int    `json:"totalMinionsKilled"`
-	TotalTimeCCDealt               int    `json:"totalTimeCCDealt"`
-	TotalTimeSpentDead             int    `json:"totalTimeSpentDead"`
-	TotalUnitsHealed               int    `json:"totalUnitsHealed"`
-	TripleKills                    int    `json:"tripleKills"`
-	TrueDamageDealt                int    `json:"trueDamageDealt"`
-	TrueDamageDealtToChampions     int    `json:"trueDamageDealtToChampions"`
-	TrueDamageTaken                int    `json:"trueDamageTaken"`
-	TurretKills                    int    `json:"turretKills"`
-	TurretTakedowns                int    `json:"turretTakedowns"`
-	TurretsLost                    int    `json:"turretsLost"`
-	UnrealKills                    int    `json:"unrealKills"`
-	VisionScore                    int    `json:"visionScore"`
-	VisionWardsBoughtInGame        int    `json:"visionWardsBoughtInGame"`
-	WardsKilled                    int    `json:"wardsKilled"`
-	WardsPlaced                    int    `json:"wardsPlaced"`
+	TimeCCingOthers                int64  `json:"timeCCingOthers"`
+	TimePlayed                     int64  `json:"timePlayed"`
+	TotalDamageDealt               int64  `json:"totalDamageDealt"`
+	TotalDamageDealtToChampions    int64  `json:"totalDamageDealtToChampions"`
+	TotalDamageShieldedOnTeammates int64  `json:"totalDamageShieldedOnTeammates"`
+	TotalDamageTaken               int64  `json:"totalDamageTaken"`
+	TotalHeal                      int64  `json:"totalHeal"`
+	TotalHealsOnTeammates          int64  `json:"totalHealsOnTeammates"`
+	TotalMinionsKilled             int64  `json:"totalMinionsKilled"`
+	TotalTimeCCDealt               int64  `json:"totalTimeCCDealt"`
+	TotalTimeSpentDead             int64  `json:"totalTimeSpentDead"`
+	TotalUnitsHealed               int64  `json:"totalUnitsHealed"`
+	TripleKills                    int64  `json:"tripleKills"`
+	TrueDamageDealt                int64  `json:"trueDamageDealt"`
+	TrueDamageDealtToChampions     int64  `json:"trueDamageDealtToChampions"`
+	TrueDamageTaken                int64  `json:"trueDamageTaken"`
+	TurretKills                    int64  `json:"turretKills"`
+	TurretTakedowns                int64  `json:"turretTakedowns"`
+	TurretsLost                    int64  `json:"turretsLost"`
+	UnrealKills                    int64  `json:"unrealKills"`
+	VisionScore                    int64  `json:"visionScore"`
+	VisionWardsBoughtInGame        int64  `json:"visionWardsBoughtInGame"`
+	WardsKilled                    int64  `json:"wardsKilled"`
+	WardsPlaced                    int64  `json:"wardsPlaced"`
 	Win                            bool   `json:"win"`
 }
 
@@ -366,71 +366,71 @@ func (p *Participant) GetProfileIcon(client *datadragon.Client) (datadragon.Prof
 
 // GetChampion returns the champion played by this participant
 func (p *Participant) GetChampion(client *datadragon.Client) (datadragon.ChampionDataExtended, error) {
-	return client.GetChampionByID(strconv.Itoa(p.ChampionID))
+	return client.GetChampionByID(strconv.FormatInt(p.ChampionID, 10))
 }
 
 // GetSpell1 returns the first summoner spell of this participant
 func (p *Participant) GetSpell1(client *datadragon.Client) (datadragon.SummonerSpell, error) {
-	return client.GetSummonerSpell(strconv.Itoa(p.Summoner1ID))
+	return client.GetSummonerSpell(strconv.FormatInt(p.Summoner1ID, 10))
 }
 
 // GetSpell2 returns the second summoner spell of this participant
 func (p *Participant) GetSpell2(client *datadragon.Client) (datadragon.SummonerSpell, error) {
-	return client.GetSummonerSpell(strconv.Itoa(p.Summoner2ID))
+	return client.GetSummonerSpell(strconv.FormatInt(p.Summoner2ID, 10))
 }
 
 // GetItem0 returns the item in slot 0
 func (p *Participant) GetItem0(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item0))
+	return client.GetItem(strconv.FormatInt(p.Item0, 10))
 }
 
 // GetItem1 returns the item in slot 1
 func (p *Participant) GetItem1(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item1))
+	return client.GetItem(strconv.FormatInt(p.Item1, 10))
 }
 
 // GetItem2 returns the item in slot 2
 func (p *Participant) GetItem2(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item2))
+	return client.GetItem(strconv.FormatInt(p.Item2, 10))
 }
 
 // GetItem3 returns the item in slot 3
 func (p *Participant) GetItem3(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item3))
+	return client.GetItem(strconv.FormatInt(p.Item3, 10))
 }
 
 // GetItem4 returns the item in slot 4
 func (p *Participant) GetItem4(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item4))
+	return client.GetItem(strconv.FormatInt(p.Item4, 10))
 }
 
 // GetItem5 returns the item in slot 5
 func (p *Participant) GetItem5(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item5))
+	return client.GetItem(strconv.FormatInt(p.Item5, 10))
 }
 
 // GetItem6 returns the item in slot 6
 func (p *Participant) GetItem6(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(p.Item6))
+	return client.GetItem(strconv.FormatInt(p.Item6, 10))
 }
 
 // TeamBan is a champion banned by a team
 type TeamBan struct {
 	// Turn during which the champion was banned.
-	PickTurn int `json:"pickTurn"`
+	PickTurn int64 `json:"pickTurn"`
 	// Banned championId.
-	ChampionID int `json:"championId"`
+	ChampionID int64 `json:"championId"`
 }
 
 // GetChampion returns the champion that was banned
 func (b *TeamBan) GetChampion(client *datadragon.Client) (datadragon.ChampionDataExtended, error) {
-	return client.GetChampionByID(strconv.Itoa(b.ChampionID))
+	return client.GetChampionByID(strconv.FormatInt(b.ChampionID, 10))
 }
 
 // Objective holds information for a single objective
 type Objective struct {
-	First bool `json:"first"`
-	Kills int  `json:"kills"`
+	First bool  `json:"first"`
+	Kills int64 `json:"kills"`
 }
 
 // Objectives holds info for a teeam's objeectives
@@ -447,35 +447,35 @@ type Objectives struct {
 type Team struct {
 	Bans       []*TeamBan `json:"bans"`
 	Objectives Objectives `json:"objectives"`
-	TeamID     int        `json:"teamId"`
+	TeamID     int64      `json:"teamId"`
 	Win        bool       `json:"win"`
 }
 
 // MatchTimeline contains timeline frames for a match
 type MatchTimeline struct {
 	Frames   []*MatchFrame `json:"frames"`
-	Interval int           `json:"frameInterval"`
+	Interval int64         `json:"frameInterval"`
 }
 
 // MatchFrame is a single frame in the timeline of a game
 type MatchFrame struct {
-	Timestamp         int                          `json:"timestamp"`
+	Timestamp         int64                        `json:"timestamp"`
 	ParticipantFrames map[string]*ParticipantFrame `json:"participantFrames"`
 	Events            []*MatchEvent                `json:"events"`
 }
 
 // ParticipantFrame contains information about a participant in a game at a single timestamp
 type ParticipantFrame struct {
-	TotalGold           int            `json:"totalGold"`
-	TeamScore           int            `json:"teamScore"`
-	ParticipantID       int            `json:"participantId"`
-	Level               int            `json:"level"`
-	CurrentGold         int            `json:"currentGold"`
-	MinionsKilled       int            `json:"minionsKilled"`
-	DominionScore       int            `json:"dominionScore"`
+	TotalGold           int64          `json:"totalGold"`
+	TeamScore           int64          `json:"teamScore"`
+	ParticipantID       int64          `json:"participantId"`
+	Level               int64          `json:"level"`
+	CurrentGold         int64          `json:"currentGold"`
+	MinionsKilled       int64          `json:"minionsKilled"`
+	DominionScore       int64          `json:"dominionScore"`
 	Position            *MatchPosition `json:"position"`
-	XP                  int            `json:"xp"`
-	JungleMinionsKilled int            `json:"jungleMinionsKilled"`
+	XP                  int64          `json:"xp"`
+	JungleMinionsKilled int64          `json:"jungleMinionsKilled"`
 }
 
 // MatchEventType is the type of an event
@@ -521,53 +521,53 @@ var (
 type MatchEvent struct {
 	EventType               string          `json:"eventType"`
 	TowerType               string          `json:"towerType"`
-	TeamID                  int             `json:"teamId"`
+	TeamID                  int64           `json:"teamId"`
 	AscendedType            string          `json:"ascendedType"`
-	KillerID                int             `json:"killerId"`
+	KillerID                int64           `json:"killerId"`
 	LevelUpType             string          `json:"levelUpType"`
 	PointCaptured           string          `json:"pointCaptured"`
-	AssistingParticipantIDs []int           `json:"assistingParticipantIds"`
+	AssistingParticipantIDs []int64         `json:"assistingParticipantIds"`
 	WardType                string          `json:"wardType"`
 	MonsterType             string          `json:"monsterType"`
 	Type                    *MatchEventType `json:"type"`
-	SkillSlot               int             `json:"skillSlot"`
-	VictimID                int             `json:"victimId"`
-	Timestamp               int             `json:"timestamp"`
-	AfterID                 int             `json:"afterId"`
+	SkillSlot               int64           `json:"skillSlot"`
+	VictimID                int64           `json:"victimId"`
+	Timestamp               int64           `json:"timestamp"`
+	AfterID                 int64           `json:"afterId"`
 	MonsterSubType          string          `json:"monsterSubType"`
 	LaneType                string          `json:"laneType"`
-	ItemID                  int             `json:"itemId"`
-	ParticipantID           int             `json:"participantId"`
+	ItemID                  int64           `json:"itemId"`
+	ParticipantID           int64           `json:"participantId"`
 	BuildingType            string          `json:"buildingType"`
-	CreatorID               int             `json:"creatorId"`
+	CreatorID               int64           `json:"creatorId"`
 	Position                *MatchPosition  `json:"position"`
-	BeforeID                int             `json:"beforeId"`
+	BeforeID                int64           `json:"beforeId"`
 }
 
 // GetItem returns the item for this event
 func (e *MatchEvent) GetItem(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(e.ItemID))
+	return client.GetItem(strconv.FormatInt(e.ItemID, 10))
 }
 
 // MatchPosition is a position on the map in a game
 type MatchPosition struct {
-	X int `json:"x"`
-	Y int `json:"y"`
+	X int64 `json:"x"`
+	Y int64 `json:"y"`
 }
 
 // GameInfo contains information about an ongoing game
 type GameInfo struct {
-	GameID            int                       `json:"gameId"`
-	GameStartTime     int                       `json:"gameStartTime"`
+	GameID            int64                     `json:"gameId"`
+	GameStartTime     int64                     `json:"gameStartTime"`
 	PlatformID        string                    `json:"platformId"`
 	GameMode          string                    `json:"gameMode"`
-	MapID             int                       `json:"mapId"`
+	MapID             int64                     `json:"mapId"`
 	GameType          string                    `json:"gameType"`
 	BannedChampions   []*BannedChampion         `json:"bannedChampions"`
 	Observers         *Observer                 `json:"observers"`
 	Participants      []*CurrentGameParticipant `json:"participants"`
-	GameLength        int                       `json:"gameLength"`
-	GameQueueConfigID int                       `json:"gameQueueConfigId"`
+	GameLength        int64                     `json:"gameLength"`
+	GameQueueConfigID int64                     `json:"gameQueueConfigId"`
 }
 
 // GetMatch returns information about the finished match
@@ -577,14 +577,14 @@ func (i *GameInfo) GetMatch(client *Client) (*Match, error) {
 
 // BannedChampion represents a champion ban during pack/ban phase
 type BannedChampion struct {
-	PickTurn   int `json:"pickTurn"`
-	ChampionID int `json:"championId"`
-	TeamID     int `json:"teamId"`
+	PickTurn   int64 `json:"pickTurn"`
+	ChampionID int64 `json:"championId"`
+	TeamID     int64 `json:"teamId"`
 }
 
 // GetChampion returns the banned champion
 func (c *BannedChampion) GetChampion(client *datadragon.Client) (datadragon.ChampionDataExtended, error) {
-	return client.GetChampionByID(strconv.Itoa(c.ChampionID))
+	return client.GetChampionByID(strconv.FormatInt(c.ChampionID, 10))
 }
 
 // Observer is an observer of an ongoing game
@@ -594,15 +594,15 @@ type Observer struct {
 
 // CurrentGameParticipant represents a player in an ongoing game
 type CurrentGameParticipant struct {
-	ProfileIconID            int                        `json:"profileIconId"`
-	ChampionID               int                        `json:"championId"`
+	ProfileIconID            int64                      `json:"profileIconId"`
+	ChampionID               int64                      `json:"championId"`
 	SummonerName             string                     `json:"summonerName"`
 	GameCustomizationObjects []*GameCustomizationObject `json:"gameCustomizationObjects"`
 	Bot                      bool                       `json:"bot"`
 	Perks                    *Perks                     `json:"perks"`
-	Spell2ID                 int                        `json:"spell2Id"`
-	Spell1ID                 int                        `json:"spell1Id"`
-	TeamID                   int                        `json:"teamId"`
+	Spell2ID                 int64                      `json:"spell2Id"`
+	Spell1ID                 int64                      `json:"spell1Id"`
+	TeamID                   int64                      `json:"teamId"`
 	SummonerID               string                     `json:"summonerId"`
 	PUUID                    string                     `json:"puuid"`
 	RiotID                   string                     `json:"riotId"`
@@ -610,17 +610,17 @@ type CurrentGameParticipant struct {
 
 // GetChampion returns the champion played by this participant
 func (p *CurrentGameParticipant) GetChampion(client *datadragon.Client) (datadragon.ChampionDataExtended, error) {
-	return client.GetChampionByID(strconv.Itoa(p.ChampionID))
+	return client.GetChampionByID(strconv.FormatInt(p.ChampionID, 10))
 }
 
 // GetSpell1 returns the first summoner spell of this participant
 func (p *CurrentGameParticipant) GetSpell1(client *datadragon.Client) (datadragon.SummonerSpell, error) {
-	return client.GetSummonerSpell(strconv.Itoa(p.Spell1ID))
+	return client.GetSummonerSpell(strconv.FormatInt(p.Spell1ID, 10))
 }
 
 // GetSpell2 returns the second summoner spell of this participant
 func (p *CurrentGameParticipant) GetSpell2(client *datadragon.Client) (datadragon.SummonerSpell, error) {
-	return client.GetSummonerSpell(strconv.Itoa(p.Spell2ID))
+	return client.GetSummonerSpell(strconv.FormatInt(p.Spell2ID, 10))
 }
 
 // GameCustomizationObject contains information specific to an ongoing game
@@ -631,14 +631,14 @@ type GameCustomizationObject struct {
 
 // Perks represents the runes for a player in an ongoing game
 type Perks struct {
-	PerkStyle    int   `json:"perkStyle"`
-	PerksIDs     []int `json:"perkIds"`
-	PerkSubStyle int   `json:"perkSubStyle"`
+	PerkStyle    int64   `json:"perkStyle"`
+	PerksIDs     []int64 `json:"perkIds"`
+	PerkSubStyle int64   `json:"perkSubStyle"`
 }
 
 // FeaturedGames represents a list of featured games
 type FeaturedGames struct {
-	ClientRefreshInterval int         `json:"clientRefreshInterval"`
+	ClientRefreshInterval int64       `json:"clientRefreshInterval"`
 	GameList              []*GameInfo `json:"gameList"`
 }
 
@@ -664,7 +664,7 @@ type Service struct {
 type Incident struct {
 	Active    bool             `json:"active"`
 	CreatedAt string           `json:"created_at"`
-	ID        int              `json:"id"`
+	ID        int64            `json:"id"`
 	Updates   []*StatusMessage `json:"updates"`
 }
 
@@ -688,11 +688,11 @@ type StatusTranslation struct {
 
 // Summoner represents a summoner with several related IDs
 type Summoner struct {
-	ProfileIconID int    `json:"profileIconId"`
+	ProfileIconID int64  `json:"profileIconId"`
 	Name          string `json:"name"`
 	PUUID         string `json:"puuid"`
-	SummonerLevel int    `json:"summonerLevel"`
-	RevisionDate  int    `json:"revisionDate"`
+	SummonerLevel int64  `json:"summonerLevel"`
+	RevisionDate  int64  `json:"revisionDate"`
 	ID            string `json:"id"`
 	AccountID     string `json:"accountId"`
 }
@@ -715,14 +715,14 @@ type Tournament struct {
 	Code         string   `json:"code"`
 	Spectators   string   `json:"spectators"`
 	Region       string   `json:"region"`
-	ProviderID   int      `json:"providerId"`
-	TeamSize     int      `json:"teamSize"`
+	ProviderID   int64    `json:"providerId"`
+	TeamSize     int64    `json:"teamSize"`
 	Participants []string `json:"participants"`
 	PickType     string   `json:"pickType"`
-	TournamentID int      `json:"tournamentId"`
+	TournamentID int64    `json:"tournamentId"`
 	LobbyName    string   `json:"lobbyName"`
 	Password     string   `json:"password"`
-	ID           int      `json:"id"`
+	ID           int64    `json:"id"`
 	MetaData     string   `json:"metaData"`
 }
 
@@ -731,7 +731,7 @@ type TournamentCodeParameters struct {
 	// The spectator type of the game. (Legal values: NONE, LOBBYONLY, ALL)
 	SpectatorType string `json:"spectatorType"`
 	// The team size of the game. Valid values are 1-5.
-	TeamSize int `json:"teamSize"`
+	TeamSize int64 `json:"teamSize"`
 	// The pick type of the game. (Legal values: BLIND_PICK, DRAFT_MODE, ALL_RANDOM, TOURNAMENT_DRAFT)
 	PickType string `json:"pickType"`
 	// Optional list of encrypted summonerIds in order to validate the players eligible to join the lobby.
@@ -761,7 +761,7 @@ type TournamentUpdateParameters struct {
 // TournamentRegistrationParameters parameters required for creating a tournament
 type TournamentRegistrationParameters struct {
 	// The provider ID to specify the regional registered provider data to associate this tournament.
-	ProviderID int `json:"providerId"`
+	ProviderID int64 `json:"providerId"`
 	// The optional name of the tournament.
 	Name string `json:"name"`
 }

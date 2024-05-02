@@ -17,7 +17,7 @@ import (
 func TestLeagueList_GetRank(t *testing.T) {
 	tests := []struct {
 		name    string
-		i       int
+		i       int64
 		entries []*LeagueItem
 		want    *LeagueItem
 	}{
@@ -67,7 +67,7 @@ func TestChampionInfo_GetChampionsForNewPlayers(t *testing.T) {
 				},
 			),
 			model: ChampionInfo{
-				FreeChampionIDsForNewPlayers: []int{1, 2},
+				FreeChampionIDsForNewPlayers: []int64{1, 2},
 			},
 			want: []datadragon.ChampionDataExtended{
 				{ChampionData: datadragon.ChampionData{Name: "champion1", Key: "1"}},
@@ -78,7 +78,7 @@ func TestChampionInfo_GetChampionsForNewPlayers(t *testing.T) {
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
 			model: ChampionInfo{
-				FreeChampionIDsForNewPlayers: []int{1},
+				FreeChampionIDsForNewPlayers: []int64{1},
 			},
 			wantErr: api.Error{
 				Message:    "unknown error reason",
@@ -116,7 +116,7 @@ func TestChampionInfo_GetChampions(t *testing.T) {
 				},
 			),
 			model: ChampionInfo{
-				FreeChampionIDs: []int{1, 2},
+				FreeChampionIDs: []int64{1, 2},
 			},
 			want: []datadragon.ChampionDataExtended{
 				{ChampionData: datadragon.ChampionData{Name: "champion1", Key: "1"}},
@@ -127,7 +127,7 @@ func TestChampionInfo_GetChampions(t *testing.T) {
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
 			model: ChampionInfo{
-				FreeChampionIDs: []int{1},
+				FreeChampionIDs: []int64{1},
 			},
 			wantErr: api.Error{
 				Message:    "unknown error reason",

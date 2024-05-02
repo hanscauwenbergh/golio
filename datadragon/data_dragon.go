@@ -177,13 +177,13 @@ func (c *Client) GetProfileIcons() ([]ProfileIcon, error) {
 }
 
 // GetProfileIcon return information about the profile icon with the given id
-func (c *Client) GetProfileIcon(id int) (ProfileIcon, error) {
+func (c *Client) GetProfileIcon(id int64) (ProfileIcon, error) {
 	icons, err := c.GetProfileIcons()
 	if err != nil {
 		return ProfileIcon{}, err
 	}
 	for _, icon := range icons {
-		if int(icon.ID) == id {
+		if int64(icon.ID) == id {
 			return icon, nil
 		}
 	}
@@ -247,7 +247,7 @@ func (c *Client) GetMasteries() ([]Mastery, error) {
 }
 
 // GetMastery returns information about the mastery with the given id
-func (c *Client) GetMastery(id int) (Mastery, error) {
+func (c *Client) GetMastery(id int64) (Mastery, error) {
 	masteries, err := c.GetMasteries()
 	if err != nil {
 		return Mastery{}, err

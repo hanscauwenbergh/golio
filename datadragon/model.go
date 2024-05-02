@@ -27,10 +27,10 @@ func (d *ChampionData) GetExtended(client *Client) (ChampionDataExtended, error)
 
 // ChampionDataInfo contains information about the playstyle of a champion
 type ChampionDataInfo struct {
-	Attack     int `json:"attack"`
-	Defense    int `json:"defense"`
-	Magic      int `json:"magic"`
-	Difficulty int `json:"difficulty"`
+	Attack     int64 `json:"attack"`
+	Defense    int64 `json:"defense"`
+	Magic      int64 `json:"magic"`
+	Difficulty int64 `json:"difficulty"`
 }
 
 // ImageData contains information about an image
@@ -38,10 +38,10 @@ type ImageData struct {
 	Full   string `json:"full"`
 	Sprite string `json:"sprite"`
 	Group  string `json:"group"`
-	X      int    `json:"x"`
-	Y      int    `json:"y"`
-	W      int    `json:"w"`
-	H      int    `json:"h"`
+	X      int64  `json:"x"`
+	Y      int64  `json:"y"`
+	W      int64  `json:"w"`
+	H      int64  `json:"h"`
 }
 
 // ChampionDataStats contains information about the stats of a champion
@@ -83,7 +83,7 @@ type ChampionDataExtended struct {
 // SkinData contains information about a skin for a champion
 type SkinData struct {
 	ID      string `json:"id"`
-	Num     int    `json:"num"`
+	Num     int64  `json:"num"`
 	Name    string `json:"name"`
 	Chromas bool   `json:"chromas"`
 }
@@ -98,7 +98,7 @@ type SpellData struct {
 		Label  []string `json:"label"`
 		Effect []string `json:"effect"`
 	} `json:"leveltip"`
-	MaxRank      int         `json:"maxrank"`
+	MaxRank      int64       `json:"maxrank"`
 	Cooldown     []float64   `json:"cooldown"`
 	CooldownBurn string      `json:"cooldownBurn"`
 	Cost         []float64   `json:"cost"`
@@ -132,7 +132,7 @@ type RecommendedItemData struct {
 	Map           string               `json:"map"`
 	Mode          string               `json:"mode"`
 	CustomTag     string               `json:"customTag"`
-	SortRank      int                  `json:"sortrank"`
+	SortRank      int64                `json:"sortrank"`
 	ExtensionPage bool                 `json:"extensionPage"`
 	CustomPanel   interface{}          `json:"customPanel"`
 	Blocks        []RecommendedItemSet `json:"blocks"`
@@ -143,8 +143,8 @@ type RecommendedItemSet struct {
 	Type                string            `json:"type"`
 	RecMath             bool              `json:"recMath"`
 	RecSteps            bool              `json:"recSteps"`
-	MinSummonerLevel    int               `json:"minSummonerLevel"`
-	MaxSummonerLevel    int               `json:"maxSummonerLevel"`
+	MinSummonerLevel    int64             `json:"minSummonerLevel"`
+	MaxSummonerLevel    int64             `json:"maxSummonerLevel"`
 	ShowIfSummonerSpell string            `json:"showIfSummonerSpell"`
 	HideIfSummonerSpell string            `json:"hideIfSummonerSpell"`
 	Items               []RecommendedItem `json:"items"`
@@ -153,7 +153,7 @@ type RecommendedItemSet struct {
 // RecommendedItem represents an item in a recommended set
 type RecommendedItem struct {
 	ID        string `json:"id"`
-	Count     int    `json:"count"`
+	Count     int64  `json:"count"`
 	HideCount bool   `json:"hideCount"`
 }
 
@@ -168,26 +168,26 @@ type Item struct {
 	Name string `json:"name"`
 	Rune struct {
 		IsRune bool   `json:"isrune"`
-		Tier   int    `json:"tier"`
+		Tier   int64  `json:"tier"`
 		Type   string `json:"type"`
 	} `json:"rune"`
 	Gold struct {
-		Base        int  `json:"base"`
-		Total       int  `json:"total"`
-		Sell        int  `json:"sell"`
-		Purchasable bool `json:"purchasable"`
+		Base        int64 `json:"base"`
+		Total       int64 `json:"total"`
+		Sell        int64 `json:"sell"`
+		Purchasable bool  `json:"purchasable"`
 	} `json:"gold"`
 	Group            string          `json:"group"`
 	Description      string          `json:"description"`
 	Colloqial        string          `json:"colloq"`
 	Plaintext        string          `json:"plaintext"`
 	Consumed         bool            `json:"consumed"`
-	Stacks           int             `json:"stacks"`
-	Depth            int             `json:"depth"`
+	Stacks           int64           `json:"stacks"`
+	Depth            int64           `json:"depth"`
 	ConsumeOnFull    bool            `json:"consumeOnFull"`
 	From             []string        `json:"from"`
 	Into             []string        `json:"into"`
-	SpecialRecipe    int             `json:"specialRecipe"`
+	SpecialRecipe    int64           `json:"specialRecipe"`
 	InStore          bool            `json:"inStore"`
 	HideFromAll      bool            `json:"hideFromAll"`
 	RequiredChampion string          `json:"requiredChampion"`
@@ -267,11 +267,11 @@ type ItemStats struct {
 
 // Mastery represents an old mastery
 type Mastery struct {
-	ID           int       `json:"id"`
+	ID           int64     `json:"id"`
 	Name         string    `json:"name"`
 	Description  []string  `json:"description"`
 	Image        ImageData `json:"image"`
-	Ranks        int       `json:"ranks"`
+	Ranks        int64     `json:"ranks"`
 	Prerequisite string    `json:"prereq"`
 }
 
@@ -281,7 +281,7 @@ type ProfileIcon struct {
 	Image ImageData `json:"image"`
 }
 
-// Integer is an int that can be unmarshalled from a json number OR string
+// Integer is an int64 that can be unmarshalled from a json number OR string
 type Integer int
 
 // UnmarshalJSON unmarshals a JSON string or number into i
@@ -298,7 +298,7 @@ type SummonerSpell struct {
 	Name         string    `json:"name"`
 	Description  string    `json:"description"`
 	Tooltip      string    `json:"tooltip"`
-	MaxRank      int       `json:"maxrank"`
+	MaxRank      int64     `json:"maxrank"`
 	Cooldown     []float64 `json:"cooldown"`
 	CooldownBurn string    `json:"cooldownBurn"`
 	Cost         []float64 `json:"cost"`
@@ -309,7 +309,7 @@ type SummonerSpell struct {
 		Key         string      `json:"key"`
 	} `json:"vars"`
 	Key           string    `json:"key"`
-	SummonerLevel int       `json:"summonerLevel"`
+	SummonerLevel int64     `json:"summonerLevel"`
 	Modes         []string  `json:"modes"`
 	CostType      string    `json:"costType"`
 	MaxAmmo       string    `json:"maxammo"`

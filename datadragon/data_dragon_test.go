@@ -416,7 +416,7 @@ func TestClient_GetProfileIcon(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		id      int
+		id      int64
 		want    ProfileIcon
 		wantErr error
 	}
@@ -506,7 +506,7 @@ func TestClient_GetMastery(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		id      int
+		id      int64
 		want    Mastery
 		wantErr error
 	}
